@@ -1,0 +1,24 @@
+# Data, results and logs
+/data/
+/experiments/
+/figures/
+/wandb/
+slurm-*.out
+*_jobs.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store

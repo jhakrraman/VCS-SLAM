@@ -1,0 +1,20 @@
+# Python 3.10 with PyTorch 2.0.1 / torchvision 0.15.2 for CUDA 11.8, installed first (see README).
+numpy==1.26.4
+scipy==1.11.4
+opencv-python==4.8.1.78
+imageio==2.31.6
+matplotlib==3.7.5
+pandas==2.0.3
+pillow==10.0.1
+tqdm==4.65.0
+pyyaml==6.0.1
+natsort==8.4.0
+kornia==0.7.0
+torchmetrics==1.2.1
+lpips==0.1.4
+pytorch-msssim==1.0.0
+plyfile==0.8.1
+open3d==0.16.0
+# Then the CUDA rasterizer, built against the installed PyTorch (see README):
+#   pip install --no-build-isolation git+https://github.com/JonathonLuiten/diff-gaussian-rasterization-w-depth.git@cb65e4b86bc3bd8ed42174b72a62e8d3a3a71110
+# Optional: wandb (logging, off by default), pytest (tests/), cyclonedds (scripts/nerfcapture2dataset.py).

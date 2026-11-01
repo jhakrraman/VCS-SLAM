@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the paper below."
+title: "VCS-SLAM: Visibility-Consistent Semantic Fusion for 3D Gaussian SLAM"
+authors:
+  - family-names: Jha
+    given-names: Raman
+    email: ramanjha@nyu.edu
+    affiliation: "New York University; Embodied AI and Robotics (AIR) Lab, NYU Abu Dhabi; New York University Abu Dhabi"
+  - family-names: Yuan
+    given-names: Shuaihang
+    affiliation: "Embodied AI and Robotics (AIR) Lab, NYU Abu Dhabi; NYUAD Center for Artificial Intelligence and Robotics (CAIR); New York University Abu Dhabi"
+  - family-names: Fang
+    given-names: Yi
+    affiliation: "New York University; Embodied AI and Robotics (AIR) Lab, NYU Abu Dhabi; NYUAD Center for Artificial Intelligence and Robotics (CAIR); New York University Abu Dhabi"
+repository-code: "https://github.com/jhakrraman/VCS-SLAM"
+license: BSD-3-Clause
+keywords:
+  - semantic SLAM
+  - 3D Gaussian splatting
+  - semantic mapping
+  - RGB-D SLAM
+preferred-citation:
+  type: article
+  title: "VCS-SLAM: Visibility-Consistent Semantic Fusion for 3D Gaussian SLAM"
+  authors:
+    - family-names: Jha
+      given-names: Raman
+    - family-names: Yuan
+      given-names: Shuaihang
+    - family-names: Fang
+      given-names: Yi
+  journal: "IEEE Robotics and Automation Letters"
+  year: 2026
+  identifiers:
+    - type: url
+      value: "https://arxiv.org/abs/2606.29494"
+      description: "arXiv preprint 2606.29494"
