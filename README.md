@@ -186,6 +186,8 @@ Released under the BSD 3-Clause License (see [LICENSE](LICENSE)), inherited from
 - The [diff-gaussian-rasterization-w-depth](https://github.com/JonathonLuiten/diff-gaussian-rasterization-w-depth) dependency is also under that license.
 - `datasets/gradslam_datasets` comes from GradSLAM.
 
+If you find our work useful, or used it in any way, please cite this:
+
 ## Citation
 
 ```bibtex
@@ -196,26 +198,6 @@ Released under the BSD 3-Clause License (see [LICENSE](LICENSE)), inherited from
   year          = {2026},
   eprint        = {2606.29494},
   archivePrefix = {arXiv}
-}
-```
-
-Please also cite the works this code builds on:
-
-```bibtex
-@inproceedings{li2024sgs,
-  title     = {SGS-SLAM: Semantic Gaussian Splatting for Neural Dense SLAM},
-  author    = {Li, Mingrui and Liu, Shuhong and Zhou, Heng and Zhu, Guohao and Cheng, Na and Deng, Tianchen and Wang, Hongyu},
-  booktitle = {European Conference on Computer Vision (ECCV)},
-  pages     = {163--179},
-  year      = {2024}
-}
-
-@inproceedings{keetha2024splatam,
-  title     = {SplaTAM: Splat, Track \& Map 3D Gaussians for Dense RGB-D SLAM},
-  author    = {Keetha, Nikhil and Karhade, Jay and Jatavallabhula, Krishna Murthy and Yang, Gengshan and Scherer, Sebastian and Ramanan, Deva and Luiten, Jonathon},
-  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
-  pages     = {21357--21366},
-  year      = {2024}
 }
 ```
 
