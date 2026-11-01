@@ -186,7 +186,7 @@ Released under the BSD 3-Clause License (see [LICENSE](LICENSE)), inherited from
 - The [diff-gaussian-rasterization-w-depth](https://github.com/JonathonLuiten/diff-gaussian-rasterization-w-depth) dependency is also under that license.
 - `datasets/gradslam_datasets` comes from GradSLAM.
 
-If you find our work useful, or used it in any way, please cite this:
+## If you find our work useful, or used it in any way, please cite this:
 
 ## Citation
 
