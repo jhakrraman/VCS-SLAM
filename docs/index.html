@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>VCS-SLAM: Visibility-Consistent Semantic Fusion for 3D Gaussian SLAM</title>
+  <meta name="description" content="VCS-SLAM fuses 2D semantic priors into a 3D Gaussian SLAM map according to their geometric reliability: visibility consistency, surface-supported boundaries and ray-level conflict uncertainty. IEEE RA-L 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="VCS-SLAM: Visibility-Consistent Semantic Fusion for 3D Gaussian SLAM">
+  <meta property="og:description" content="Geometry-validated semantic evidence fusion for RGB-D 3D Gaussian SLAM (IEEE RA-L 2026).">
+  <meta property="og:url" content="https://jhakrraman.github.io/VCS-SLAM/">
+  <meta property="og:image" content="https://jhakrraman.github.io/VCS-SLAM/static/images/teaser.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='22' cy='26' r='14' fill='%235b4bdb'/%3E%3Ccircle cx='42' cy='26' r='14' fill='%2322a06b' fill-opacity='.85'/%3E%3Ccircle cx='32' cy='42' r='14' fill='%23e8590c' fill-opacity='.8'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #1d2125;
+      --muted: #5c6670;
+      --line: #dfe3e8;
+      --soft: #f5f7fa;
+      --accent: #4b3fc4;
+      --accent-soft: #eeecfd;
+      --button: #24292f;
+      --button-hover: #000;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: #fff;
+      color: var(--text);
+      font-family: "Noto Sans", system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 17px;
+      line-height: 1.65;
+      -webkit-text-size-adjust: 100%;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+
+    /* Header */
+    header { padding: 56px 0 28px; text-align: center; }
+    h1 { margin: 0 0 14px; font-size: clamp(1.75rem, 4.2vw, 2.7rem); line-height: 1.2; font-weight: 700; }
+    h1 .name { color: var(--accent); }
+    .venue {
+      display: inline-block; margin: 0 0 22px; padding: 4px 14px; border-radius: 999px;
+      background: var(--accent-soft); color: var(--accent); font-weight: 600; font-size: 0.95rem;
+    }
+    .authors { margin: 0 0 6px; font-size: 1.2rem; }
+    .authors span { white-space: nowrap; margin: 0 8px; }
+    .authors a { color: var(--text); border-bottom: 1px solid var(--line); }
+    .authors a:hover { text-decoration: none; border-bottom-color: var(--accent); }
+    .affiliations { margin: 0 auto 26px; max-width: 760px; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+    .affiliations span { display: inline-block; margin: 0 8px; }
+    sup { font-size: 0.68em; }
+    .links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .button {
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 20px; border-radius: 999px;
+      background: var(--button); color: #fff; font-weight: 600; font-size: 0.98rem;
+    }
+    .button:hover { background: var(--button-hover); text-decoration: none; }
+    .button:focus-visible, .copy:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+    .button svg { width: 18px; height: 18px; fill: currentColor; flex: none; }
+
+    /* Sections */
+    section { padding: 34px 0; }
+    section + section { border-top: 1px solid var(--line); }
+    h2 { margin: 0 0 18px; font-size: 1.7rem; font-weight: 700; text-align: center; }
+    h3 { margin: 0 0 6px; font-size: 1.12rem; }
+    p { margin: 0 0 14px; }
+    .lead { text-align: justify; }
+    figure { margin: 0 0 8px; }
+    figure img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); }
+    figcaption { margin-top: 10px; color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+    figcaption b { color: var(--text); }
+
+    /* Method */
+    .modules { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 26px 0 18px; }
+    .card { padding: 18px 18px 14px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .card .tag { display: inline-block; margin-bottom: 6px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; }
+    .card p { font-size: 0.95rem; color: var(--muted); }
+    .vcsu .tag { color: #2b8a3e; } .scea .tag { color: #d9480f; } .cauw .tag { color: #1c64c8; }
+    .math {
+      font-family: "Cambria Math", "STIX Two Math", "Latin Modern Math", "Times New Roman", serif;
+      font-size: 1.08rem; color: var(--text); background: var(--soft); border-radius: 8px;
+      padding: 10px 12px; text-align: center; overflow-x: auto; white-space: nowrap;
+    }
+    .math i { font-style: italic; }
+    .objective { margin-top: 6px; padding: 18px; border-radius: 12px; background: var(--accent-soft); }
+    .objective .math { background: #fff; }
+    .objective p { margin: 10px 0 0; font-size: 0.95rem; }
+
+    /* Results */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; margin-bottom: 30px; }
+    .stat { padding: 16px; border-radius: 12px; background: var(--soft); text-align: center; }
+    .stat .value { display: block; font-size: 1.9rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
+    .stat .label { display: block; margin-top: 4px; font-size: 0.9rem; color: var(--muted); line-height: 1.4; }
+    .table-title { margin: 26px 0 10px; font-size: 1.08rem; font-weight: 600; text-align: center; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.94rem; font-variant-numeric: tabular-nums; }
+    th, td { padding: 8px 12px; border-bottom: 1px solid var(--line); text-align: center; white-space: nowrap; }
+    th { font-weight: 600; background: var(--soft); }
+    td:first-child, th:first-child { text-align: left; }
+    td.method { text-align: center; }
+    .math .line { display: block; }
+    tr.ours td { background: var(--accent-soft); font-weight: 600; }
+    td.best { font-weight: 700; }
+    .note { margin-top: 8px; color: var(--muted); font-size: 0.86rem; text-align: center; }
+
+    /* BibTeX */
+    .bibtex { position: relative; }
+    pre {
+      margin: 0; padding: 18px; overflow-x: auto; border-radius: 10px; background: var(--soft);
+      font-size: 0.86rem; line-height: 1.55; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    }
+    .copy {
+      position: absolute; top: 10px; right: 10px; padding: 5px 12px; border: 1px solid var(--line); border-radius: 8px;
+      background: #fff; color: var(--text); font: inherit; font-size: 0.82rem; cursor: pointer;
+    }
+    .copy:hover { border-color: var(--muted); }
+
+    footer { padding: 26px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.86rem; text-align: center; }
+
+    @media (max-width: 600px) {
+      body { font-size: 16px; }
+      header { padding-top: 36px; }
+      .authors { font-size: 1.05rem; }
+      .lead { text-align: left; }
+      h2 { font-size: 1.45rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1><span class="name">VCS-SLAM</span>: Visibility-Consistent Semantic Fusion for 3D Gaussian SLAM</h1>
+    <p class="venue">IEEE Robotics and Automation Letters (RA-L) 2026</p>
+    <p class="authors">
+      <span><a href="https://jhakrraman.github.io/">Raman Jha</a><sup>1,2,4</sup></span>
+      <span>Shuaihang Yuan<sup>2,3,4</sup></span>
+      <span>Yi Fang<sup>1,2,3,4</sup></span>
+    </p>
+    <p class="affiliations">
+      <span><sup>1</sup>New York University</span>
+      <span><sup>2</sup>Embodied AI and Robotics (AIR) Lab, NYU Abu Dhabi</span>
+      <span><sup>3</sup>NYUAD Center for Artificial Intelligence and Robotics (CAIR)</span>
+      <span><sup>4</sup>New York University Abu Dhabi</span>
+    </p>
+    <nav class="links" aria-label="Paper and code">
+      <a class="button" href="https://arxiv.org/pdf/2606.29494">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 7V3.5L18.5 9H13zM8 13h8v2H8v-2zm0 4h8v2H8v-2z"/></svg>
+        Paper
+      </a>
+      <a class="button" href="https://arxiv.org/abs/2606.29494">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v2H4V4zm0 4h10v2H4V8zm0 4h16v2H4v-2zm0 4h10v2H4v-2zm14-1 4 3-4 3v-6z"/></svg>
+        arXiv
+      </a>
+      <a class="button" href="https://github.com/jhakrraman/VCS-SLAM">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+        Code
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <section aria-label="Overview">
+    <figure>
+      <img src="static/images/teaser.jpg" width="2000" height="1529"
+           alt="Global semantic reconstruction of a Replica room by VCS-SLAM, with before/after comparisons for the overall map and for the VCSU, SCEA and CAUW modules.">
+      <figcaption><b>Overview of VCS-SLAM.</b> Top: high-fidelity global semantic reconstruction. Bottom: effect of
+        each module against a 3DGS semantic SLAM baseline. Visibility-consistent semantic updates (VCSU) suppress
+        occlusion artifacts with a depth-gated mask, surface-coupled edge alignment (SCEA) reduces unsupported semantic
+        bleeding, and conflict-aware uncertainty weighting (CAUW) down-weights ambiguous observations.</figcaption>
+    </figure>
+  </section>
+
+  <section id="abstract">
+    <h2>Abstract</h2>
+    <p class="lead">Semantic 3D Gaussian SLAM commonly fuses 2D semantic priors into a persistent 3D map using uniform
+      optimization weights. However, such priors are not equally reliable in online mapping: occlusions, unsupported
+      semantic boundaries, and ambiguous ray geometry introduce persistent semantic artifacts into the global Gaussian
+      map. We propose VCS-SLAM, a geometry-validated semantic evidence fusion framework for RGB-D 3D Gaussian SLAM.
+      Instead of treating all semantic observations as uniformly valid supervision, VCS-SLAM evaluates their geometric
+      reliability through visibility consistency, surface-supported boundary evidence, and ray-level conflict
+      uncertainty. The resulting reliability-aware objective suppresses occluded semantic updates, reduces unsupported
+      semantic bleeding, and delays premature label assignment in ambiguous regions. Experiments on Replica show
+      improved semantic consistency, boundary preservation, and reconstruction quality, while ScanNet results confirm
+      competitive tracking under real RGB-D input. Under structured corruption of the 2D priors, VCS-SLAM degrades at
+      little more than half the rate of a comparable semantic Gaussian SLAM baseline and outperforms naive gating,
+      smoothness, and entropy-weighting variants of its own modules, indicating that the gains follow from the specific
+      formulation rather than from reweighting alone.</p>
+  </section>
+
+  <section id="method">
+    <h2>Method</h2>
+    <figure>
+      <img src="static/images/architecture.jpg" width="2000" height="1102" loading="lazy"
+           alt="VCS-SLAM architecture: RGB-D frames and per-frame semantic labels feed camera tracking and joint Gaussian mapping; three reliability modules (VCSU, SCEA, CAUW) gate the semantic supervision; the output is a globally consistent 3D semantic map.">
+      <figcaption><b>System architecture.</b> Camera tracking and joint Gaussian mapping are optimized alternately over a
+        shared set of 3D semantic Gaussians. Poses are estimated online from RGB-D alone; ground-truth poses are used only
+        to evaluate ATE. Three reliability modules gate the semantic supervision during mapping.</figcaption>
+    </figure>
+
+    <p class="lead" style="margin-top: 22px;">Every Gaussian carries a <i>C</i>-dimensional semantic logit vector that
+      is alpha-composited into a semantic map <i>S<sub>p</sub></i> and supervised with per-pixel cross-entropy against
+      the 2D label <i>y<sub>p</sub></i>. Instead of trusting every label equally, VCS-SLAM scores each pixel with a
+      geometric reliability <i>&rho;<sub>p</sub></i> = <i>M</i><sub>vis</sub>(<i>p</i>) &middot; <i>C<sub>p</sub></i>
+      derived from the rendered geometry, and couples semantic boundaries to surface evidence.</p>
+
+    <div class="modules">
+      <div class="card vcsu">
+        <span class="tag">VCSU</span>
+        <h3>Visibility-consistent semantic updates</h3>
+        <p>Where the rendered depth disagrees with the sensor depth, the pixel is likely occluded or poorly
+          reconstructed, so its label is down-weighted by a soft visibility mask.</p>
+        <div class="math"><i>M</i><sub>vis</sub>(<i>p</i>) = exp(&minus;|<i>D<sub>p</sub></i> &minus; <i>D</i><sub><i>p</i></sub><sup>obs</sup>|<sup>2</sup> / 2<i>&sigma;</i><sub>vis</sub><sup>2</sup>)</div>
+      </div>
+      <div class="card scea">
+        <span class="tag">SCEA</span>
+        <h3>Surface-coupled edge alignment</h3>
+        <p>A soft penalty discourages semantic edges where the rendered surface has no depth edge, reducing semantic
+          bleeding at weakly supported boundaries.</p>
+        <div class="math"><i>L</i><sub>edge</sub> = <sup>1</sup>&frasl;<sub><i>N</i></sub> &sum; <i>E<sub>S</sub></i> &middot; max(0, <i>&tau;<sub>d</sub></i> &minus; <i>&Ecirc;<sub>D</sub></i>)</div>
+      </div>
+      <div class="card cauw">
+        <span class="tag">CAUW</span>
+        <h3>Conflict-aware uncertainty weighting</h3>
+        <p>High depth variance along a ray signals competing or unconverged geometry; those pixels receive smaller
+          semantic gradients, delaying premature label assignment.</p>
+        <div class="math"><span class="line"><i>C<sub>p</sub></i> = 1 / (1 + <i>&gamma;</i> <i>V</i><sub>pix</sub>)</span><span class="line"><i>V</i><sub>pix</sub> = <i>E</i>[<i>D</i><sup>2</sup>] &minus; <i>E</i>[<i>D</i>]<sup>2</sup></span></div>
+      </div>
+    </div>
+
+    <div class="objective">
+      <div class="math"><i>L</i><sub>sem</sub> = <i>&beta;</i> <sup>1</sup>&frasl;<sub><i>N</i></sub> &sum;<sub><i>p</i></sub> <i>&rho;<sub>p</sub></i> CE(<i>S<sub>p</sub></i>, <i>y<sub>p</sub></i>) + (1 &minus; <i>&beta;</i>) <sup>1</sup>&frasl;<sub><i>N</i></sub> &sum;<sub><i>p</i></sub> CE(<i>S<sub>p</sub></i>, <i>y<sub>p</sub></i>) + <i>&lambda;</i><sub>edge</sub> <i>L</i><sub>edge</sub></div>
+      <p>The reliability-aware semantic objective enters the joint mapping loss
+        <i>&lambda;<sub>D</sub> L<sub>D</sub></i> + <i>&lambda;<sub>C</sub> L<sub>C</sub></i> + <i>&lambda;<sub>S</sub> L</i><sub>sem</sub>,
+        so 2D priors are assimilated according to their geometric reliability rather than treated as uniformly valid.</p>
+    </div>
+  </section>
+
+  <section id="results">
+    <h2>Results</h2>
+    <div class="stats">
+      <div class="stat"><span class="value">95.87%</span><span class="label">mIoU on Replica</span></div>
+      <div class="stat"><span class="value">0.30 cm</span><span class="label">ATE RMSE on Replica, lowest among compared methods</span></div>
+      <div class="stat"><span class="value">36.03 dB</span><span class="label">rendering PSNR on Replica</span></div>
+      <div class="stat"><span class="value">&asymp; &frac12;</span><span class="label">of SGS-SLAM&rsquo;s mIoU drop under structured corruption of the 2D priors</span></div>
+    </div>
+
+    <p class="table-title">Semantic segmentation on Replica, mIoU (%)</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Avg.</th><th>Room-0</th><th>Room-1</th><th>Room-2</th><th>Office-0</th></tr></thead>
+        <tbody>
+          <tr><td>SNI-SLAM</td><td>87.41</td><td>88.42</td><td>87.43</td><td>86.16</td><td>87.63</td></tr>
+          <tr><td>SGS-SLAM</td><td>92.72</td><td>92.95</td><td>92.91</td><td>92.10</td><td>92.90</td></tr>
+          <tr><td>SemGauss-SLAM</td><td class="best">96.34</td><td>96.30</td><td class="best">95.82</td><td class="best">96.51</td><td class="best">96.72</td></tr>
+          <tr><td>Hier-SLAM</td><td>95.58</td><td>95.25</td><td>95.81</td><td>95.73</td><td>95.52</td></tr>
+          <tr class="ours"><td>VCS-SLAM (Ours)</td><td>95.87</td><td class="best">96.44</td><td>95.78</td><td>95.63</td><td>95.63</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Per-frame visible-class protocol of SGS-SLAM. SemGauss-SLAM leverages pre-trained foundation-model semantic supervision.</p>
+
+    <p class="table-title">Mechanism analysis on Replica</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Module</th><th>Targeted metric</th><th>SGS-SLAM</th><th>VCS-SLAM</th><th>Gain</th></tr></thead>
+        <tbody>
+          <tr><td>VCSU</td><td>mIoU on depth-inconsistent pixels (%)</td><td>86.43</td><td class="best">91.05</td><td>+4.62</td></tr>
+          <tr><td>SCEA</td><td>Boundary F1 (3 px)</td><td>0.82</td><td class="best">0.98</td><td>+0.16</td></tr>
+          <tr><td>CAUW</td><td>Error-detection AUROC</td><td>0.73</td><td class="best">0.85</td><td>+0.12</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="qualitative">
+    <h2>Qualitative ablation</h2>
+    <figure>
+      <img src="static/images/ablation_qualitative.jpg" width="2000" height="1392" loading="lazy"
+           alt="Semantic renderings of a Replica room: the base model shows speckled, bleeding labels around the bench, sofa and screens, while VCS-SLAM produces clean boundaries.">
+      <figcaption>(a) Input RGB view, (b) the base 3DGS semantic SLAM model without VCSU, SCEA and CAUW, (c) the full
+        VCS-SLAM. (d)&ndash;(f) Zoomed regions: the base model (top) shows occlusion artifacts and semantic bleeding that
+        VCS-SLAM (bottom) removes.</figcaption>
+    </figure>
+  </section>
+
+  <section id="robustness">
+    <h2>Robustness to unreliable semantic priors</h2>
+    <p class="lead">Dataset labels are already correct, so we corrupt the 2D priors before fusion to reproduce common
+      failure modes of 2D segmentation. Under all three structured corruptions, VCS-SLAM degrades at little more than half
+      the rate of SGS-SLAM. Under uniform random reassignment, used as a control, the trend reverses: the reliability gates measure
+      geometric support, not semantic correctness.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Corruption (mild / moderate / severe)</th><th>Method</th><th>Clean</th><th>Mild</th><th>Mod.</th><th>Severe</th><th>&Delta; &darr;</th></tr></thead>
+        <tbody>
+          <tr><td rowspan="2">Boundary misalignment (k = 1 / 3 / 5 px)</td><td class="method">SGS-SLAM</td><td>92.72</td><td>90.17</td><td>86.49</td><td>82.37</td><td>10.35</td></tr>
+          <tr class="ours"><td class="method">VCS-SLAM</td><td>95.87</td><td>93.65</td><td>91.33</td><td>89.92</td><td>5.95</td></tr>
+          <tr><td rowspan="2">Class confusion (p = 5 / 10 / 20%)</td><td class="method">SGS-SLAM</td><td>92.72</td><td>89.29</td><td>85.67</td><td>80.21</td><td>12.51</td></tr>
+          <tr class="ours"><td class="method">VCS-SLAM</td><td>95.87</td><td>93.07</td><td>90.77</td><td>88.91</td><td>6.96</td></tr>
+          <tr><td rowspan="2">Missed detections (q = 10 / 25 / 50%)</td><td class="method">SGS-SLAM</td><td>92.72</td><td>91.03</td><td>87.52</td><td>83.61</td><td>9.11</td></tr>
+          <tr class="ours"><td class="method">VCS-SLAM</td><td>95.87</td><td>94.32</td><td>92.87</td><td>90.43</td><td>5.44</td></tr>
+          <tr><td rowspan="2">Uniform, control (r = 5 / 10 / 20%)</td><td class="method">SGS-SLAM</td><td>92.72</td><td>90.37</td><td>87.95</td><td>85.38</td><td>7.34</td></tr>
+          <tr class="ours"><td class="method">VCS-SLAM</td><td>95.87</td><td>92.36</td><td>88.87</td><td>87.62</td><td>8.25</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">mIoU (%) averaged over Room-0, Room-1, Room-2 and Office-0; &Delta; = clean &minus; severe.</p>
+  </section>
+
+  <section id="bibtex">
+    <h2>BibTeX</h2>
+    <div class="bibtex">
+      <button class="copy" type="button" aria-label="Copy BibTeX">Copy</button>
+<pre id="bibtex-entry">@article{jha2026vcsslam,
+  title         = {{VCS-SLAM}: Visibility-Consistent Semantic Fusion for {3D} {Gaussian} {SLAM}},
+  author        = {Jha, Raman and Yuan, Shuaihang and Fang, Yi},
+  journal       = {IEEE Robotics and Automation Letters},
+  year          = {2026},
+  eprint        = {2606.29494},
+  archivePrefix = {arXiv}
+}</pre>
+    </div>
+  </section>
+
+  <section id="acknowledgements">
+    <h2>Acknowledgements</h2>
+    <p class="lead">VCS-SLAM builds on <a href="https://github.com/ShuhongLL/SGS-SLAM">SGS-SLAM</a> and
+      <a href="https://github.com/spla-tam/SplaTAM">SplaTAM</a>; we thank their authors for releasing their code.
+      Experiments use the <a href="https://github.com/facebookresearch/Replica-Dataset">Replica</a> and
+      <a href="http://www.scan-net.org/">ScanNet</a> datasets.</p>
+  </section>
+
+</main>
+
+<footer>
+  <div class="container">
+    Contact: <a href="mailto:ramanjha@nyu.edu">ramanjha@nyu.edu</a> &middot;
+    Code: <a href="https://github.com/jhakrraman/VCS-SLAM">github.com/jhakrraman/VCS-SLAM</a>
+  </div>
+</footer>
+
+<script>
+  document.querySelector(".copy").addEventListener("click", function () {
+    var button = this;
+    var text = document.getElementById("bibtex-entry").textContent;
+    var done = function () {
+      button.textContent = "Copied";
+      setTimeout(function () { button.textContent = "Copy"; }, 1500);
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done);
+    } else {
+      var area = document.createElement("textarea");
+      area.value = text;
+      document.body.appendChild(area);
+      area.select();
+      document.execCommand("copy");
+      document.body.removeChild(area);
+      done();
+    }
+  });
+</script>
+</body>
+</html>
