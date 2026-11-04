@@ -1,7 +1,7 @@
 <h1 align="center">VCS-SLAM: Visibility-Consistent Semantic Fusion for 3D Gaussian SLAM</h1>
 
 <p align="center">
-  Raman Jha<sup>1,2,4</sup>, Shuaihang Yuan<sup>2,3,4</sup>, Yi Fang<sup>1,2,3,4</sup><br>
+  Raman Jha<sup>1,2,4</sup>, Shuaihang Yuan<sup>2,3</sup>, Yi Fang<sup>1,2,3,4</sup><br>
   <sup>1</sup>New York University, Electrical &amp; Computer Engineering Dept., Brooklyn, NY, USA<br>
   <sup>2</sup>Embodied AI and Robotics (AIR) Lab, NYU Abu Dhabi, UAE<br>
   <sup>3</sup>NYUAD Center for Artificial Intelligence and Robotics (CAIR), Abu Dhabi, UAE<br>
